@@ -1,5 +1,7 @@
 # Blue/Green Deployment with Nginx Auto-Failover
 
+> **🌐 Live Demo**: [http://ec2-13-218-173-73.compute-1.amazonaws.com:8080/](http://ec2-13-218-173-73.compute-1.amazonaws.com:8080/)
+
 ## 📋 Overview
 
 This project implements a Blue/Green deployment strategy for a Node.js service using Nginx as a reverse proxy with automatic failover capabilities. The setup ensures zero-downtime deployments and automatic traffic switching when the active service fails.
