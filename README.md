@@ -1,64 +1,118 @@
-# HNG Stage 3 - Blue/Green Deployment with Nginx Auto-Failover
+# Blue/Green Deployment with Nginx (Auto-Failover + Manual Toggle)
 
-This project implements a Blue/Green deployment strategy for a Node.js application using Docker Compose and Nginx. It automatically routes traffic to the active service (Blue or Green) and fails over with zero downtime if the active instance becomes unavailable.
+## Overview
+This project demonstrates a Blue/Green deployment using Docker Compose and Nginx as a reverse proxy with automatic failover. It runs two identical Node.js services — Blue (active) and Green (backup) — behind Nginx. When Blue fails, Nginx automatically switches traffic to Green with zero client errors.
 
----
+## Architecture
+**Services**
+- app_blue: Active Node.js service (default)
+- app_green: Backup Node.js service
+- nginx: Reverse proxy managing routing and failover
 
-## ✳️ Project Overview
+**Flow**
+1. Client sends requests to Nginx (http://localhost:8080)  
+2. Nginx routes traffic to the active app (Blue or Green)  
+3. If Blue fails (timeout or 5xx), Nginx retries the request on Green  
+4. Client still receives a successful 200 response  
 
-You’re deploying two identical Node.js containers (Blue and Green) behind an Nginx reverse proxy.  
-Blue is the **active** app by default, Green is the **backup**.  
-When Blue fails, Nginx automatically switches traffic to Green without any failed client requests.
+**Ports**
+- Nginx: 8080  
+- Blue: 8081  
+- Green: 8082  
 
-The applications include these endpoints (already in the provided image):
+## File Structure
+blue-green-deployment/  
+├── docker-compose.yml  
+├── nginx.conf.template  
+├── entrypoint.sh  
+├── .env.example  
+└── README.md  
 
-- `GET /version` → Returns JSON + headers (`X-App-Pool`, `X-Release-Id`)
-- `GET /healthz` → Checks app health
-- `POST /chaos/start` → Simulates downtime or error
-- `POST /chaos/stop` → Stops simulated downtime
+## Environment Variables
+Configured via a .env file:
 
----
+BLUE_IMAGE=yimikaade/wonderful:devops-stage-two  
+GREEN_IMAGE=yimikaade/wonderful:devops-stage-two  
+ACTIVE_POOL=blue  
+RELEASE_ID_BLUE=blue-v1.0  
+RELEASE_ID_GREEN=green-v1.0  
+PORT=3000  
 
-## 🧠 What You’ll Learn
+To manually switch, change ACTIVE_POOL=green and reload Nginx or restart the containers.
 
-- How Nginx handles upstream failover and retries  
-- How Blue/Green deployments enable zero-downtime releases  
-- How to parameterize Docker Compose using a `.env` file  
-- How to test failover behavior and confirm headers from both app versions
+## Nginx Configuration
+Defined in nginx.conf.template:
+- Uses upstreams with primary and backup roles  
+- Tight timeouts for fast failure detection  
+- Retries failed requests on the backup app  
+- Forwards headers X-App-Pool and X-Release-Id unchanged  
 
----
+## Docker Compose Overview
+Two Node.js containers (Blue and Green) expose endpoints for version, health, and chaos simulation:
+- GET /version → shows app and release  
+- GET /healthz → health check  
+- POST /chaos/start → simulate failure  
+- POST /chaos/stop → restore  
 
-## 🏗️ Architecture
+Nginx routes requests between them based on health and configuration.
 
-**Services:**
-- **Nginx** – Reverse proxy and load balancer  
-- **app_blue** – Blue version of the app (active by default, port 8081)  
-- **app_green** – Green version of the app (backup, port 8082)
+## How to Run
+1. Clone the repository  
+   git clone https://github.com/<your-username>/blue-green-deployment.git  
+   cd blue-green-deployment  
 
-**Ports:**
-- Public (Nginx): `http://<EC2-IP>:8080`
-- Blue direct: `http://<EC2-IP>:8081`
-- Green direct: `http://<EC2-IP>:8082`
+2. Create your environment file  
+   cp .env.example .env  
 
-**Failover Flow:**
-1. All traffic goes to Blue by default.
-2. If Blue returns `5xx` or times out, Nginx retries the same request to Green.
-3. Nginx automatically switches to Green until Blue recovers.
+3. Start the services  
+   docker-compose up -d  
 
----
+4. Check containers  
+   docker ps  
 
-## 🧩 Prerequisites
+5. Test the active environment  
+   curl -i http://localhost:8080/version  
+   Expected headers:  
+   X-App-Pool: blue  
+   X-Release-Id: blue-v1.0  
 
-- AWS EC2 instance (Ubuntu 22.04 or similar)
-- Docker Engine (v20.10+) installed
-- Docker Compose (v2.0+)
-- Security group open for ports 8080, 8081, 8082
-- SSH access to EC2 (e.g. `ssh -i "blue-green-key.pem" ubuntu@<EC2-IP>`)
+6. Simulate Blue’s failure  
+   curl -X POST http://localhost:8081/chaos/start?mode=error  
+   Then check again:  
+   curl -i http://localhost:8080/version  
+   Expected headers:  
+   X-App-Pool: green  
+   X-Release-Id: green-v1.0  
 
----
+7. Recover Blue  
+   curl -X POST http://localhost:8081/chaos/stop  
 
-## ⚙️ Setup Instructions (EC2)
+## Manual Toggle
+To switch manually:
+- Update .env → ACTIVE_POOL=green  
+- Reload Nginx: docker exec nginx nginx -s reload  
+  or restart: docker-compose down && docker-compose up -d  
 
-### 1. SSH into your EC2 instance
-```bash
-ssh -i "blue-green-key.pem" ubuntu@<your-ec2-public-dns>
+## Key Concepts
+- Blue/Green deployment strategy  
+- Nginx upstreams and retry logic  
+- Health-based failover  
+- Environment-driven configuration  
+- Docker Compose orchestration  
+
+## Troubleshooting
+- Ensure entrypoint.sh is executable: chmod +x entrypoint.sh  
+- Check logs if failover doesn’t occur:  
+  docker logs nginx  
+  docker logs app_blue  
+  docker logs app_green  
+- Verify timeouts in nginx.conf.template are short for quick detection  
+
+## Deliverables
+| File | Purpose |
+|------|----------|
+| docker-compose.yml | Defines containers and networking |
+| nginx.conf.template | Handles routing and failover |
+| entrypoint.sh | Substitutes environment variables into Nginx config |
+| .env.example | Lists required environment variables |
+| README.md | Explains setup and usage |
