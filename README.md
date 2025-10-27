@@ -37,10 +37,11 @@ Client Request → Nginx (localhost:8080)
    cd blue-green-deployment
    ```
 
-2. **Configure environment variables**
+2. **Review environment variables**
+   
+   The `.env` file is already configured with working defaults. Edit if needed:
    ```bash
-   cp .env.example .env
-   # Edit .env if needed (default values work out of the box)
+   nano .env
    ```
 
 3. **Start the services**
@@ -67,7 +68,6 @@ Client Request → Nginx (localhost:8080)
 ├── nginx.conf.template      # Nginx configuration template
 ├── entrypoint.sh           # Nginx startup script with envsubst
 ├── .env                    # Environment variables
-├── .env.example            # Example environment configuration
 └── README.md              # This file
 ```
 
@@ -251,10 +251,6 @@ docker-compose down -v --remove-orphans
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
-
-[Your License Here]
-
 ---
 
-**Task Completion**: Part A - DevOps Intern Stage 2 Task
+**Task Completion**: DevOps Intern Stage 2 Task - Part A
