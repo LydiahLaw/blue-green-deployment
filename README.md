@@ -2,11 +2,11 @@
 
 > **🌐 Live Demo**: [http://ec2-13-218-173-73.compute-1.amazonaws.com:8080/](http://ec2-13-218-173-73.compute-1.amazonaws.com:8080/)
 
-## 📋 Overview
+##  Overview
 
 This project implements a Blue/Green deployment strategy for a Node.js service using Nginx as a reverse proxy with automatic failover capabilities. The setup ensures zero-downtime deployments and automatic traffic switching when the active service fails.
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 Client Request → Nginx (localhost:8080)
@@ -24,7 +24,7 @@ Client Request → Nginx (localhost:8080)
 - **Header Preservation**: Application headers (`X-App-Pool`, `X-Release-Id`) are forwarded to clients
 - **Manual Toggle Support**: Switch active pool via environment variables
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -62,7 +62,7 @@ Client Request → Nginx (localhost:8080)
    X-Release-Id: blue-v1.0
    ```
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 .
@@ -73,7 +73,7 @@ Client Request → Nginx (localhost:8080)
 └── README.md              # This file
 ```
 
-## ⚙️ Configuration
+##  Configuration
 
 ### Environment Variables (.env)
 
@@ -94,7 +94,7 @@ Client Request → Nginx (localhost:8080)
 - **Retry Policy**: Retries on error, timeout, and 5xx status codes
 - **Header Forwarding**: All upstream headers passed to clients
 
-## 🧪 Testing Failover
+##  Testing Failover
 
 ### Test Automatic Failover
 
@@ -142,7 +142,7 @@ Client Request → Nginx (localhost:8080)
    # Should show X-App-Pool: green
    ```
 
-## 📡 API Endpoints
+##  API Endpoints
 
 ### Via Nginx (localhost:8080)
 
@@ -161,7 +161,7 @@ Client Request → Nginx (localhost:8080)
 **Green Service (localhost:8082)**
 - Same endpoints as Blue
 
-## 🔍 Troubleshooting
+##  Troubleshooting
 
 ### Check service status
 ```bash
@@ -193,14 +193,14 @@ curl http://localhost:8081/version
 curl http://localhost:8082/version
 ```
 
-## 📊 Performance Expectations
+##  Performance Expectations
 
 - **Failover Time**: < 2 seconds
 - **Request Success Rate**: 100% (zero failed requests during failover)
 - **Green Traffic After Failover**: ≥95% (typically 100%)
 - **Max Request Duration**: < 10 seconds
 
-## 🛠️ Development
+##  Development
 
 ### Making Configuration Changes
 
@@ -238,14 +238,14 @@ docker-compose down -v --remove-orphans
 - [ ] Manual pool toggle works
 - [ ] Services restart cleanly
 
-## 📝 Notes
+##  Notes
 
 - Both Blue and Green use the same image but are identified by environment variables
 - The `ACTIVE_POOL` variable controls which service is primary in Nginx
 - Healthchecks ensure services are ready before accepting traffic
 - Nginx retry logic prevents client-facing errors during failover
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch
