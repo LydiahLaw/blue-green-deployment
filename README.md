@@ -677,17 +677,22 @@ blue-green-deployment/
 ## Screenshots
 
 ### 1. Failover Alert in Slack
-![Failover Alert](screenshots/failover-alert.png)
+<img width="1366" height="768" alt="failover alert" src="https://github.com/user-attachments/assets/bae9fcbc-7682-4753-8d42-015618453e21" />
+
 
 Shows the Slack message when the primary pool fails and traffic switches to backup.
 
 ### 2. High Error Rate Alert
-![Error Rate Alert](screenshots/error-rate-alert.png)
+<img width="1366" height="768" alt="high error detected" src="https://github.com/user-attachments/assets/43046b65-8675-4177-a855-a53d28703e99" />
+
 
 Shows the Slack message when error rate exceeds the configured threshold.
 
 ### 3. Structured Nginx Logs
-![Nginx Logs](screenshots/nginx-logs.png)
+<img width="1366" height="768" alt="nginx logs" src="https://github.com/user-attachments/assets/9c64d5a3-ccae-4553-8cc8-c23884f6f529" />
+<img width="1366" height="768" alt="Screenshot (1122)" src="https://github.com/user-attachments/assets/b22c639b-eb8b-4a65-8bf6-d6124b31ffc8" />
+
+
 
 Shows the structured log format with pool, release, and upstream information.
 
@@ -733,7 +738,6 @@ docker compose restart nginx
 ---
 
 ## Contributing
->>>>>>> 59c52de (Stage 3: Add observability setup with watcher, runbook, and env example)
 
 1. Fork the repository
 2. Create a feature branch
@@ -743,10 +747,7 @@ docker compose restart nginx
 
 ---
 
-<<<<<<< HEAD
+
 **Task Completion**: DevOps Intern Stage 2 Task - Part A
-=======
+
 Built as part of HNG internship Stage 3 DevOps Challenge
-
-
->>>>>>> 59c52de (Stage 3: Add observability setup with watcher, runbook, and env example)
