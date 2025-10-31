@@ -1,0 +1,2 @@
+2025/10/30 17:56:10 [warn] 8#8: *23 upstream server temporarily disabled while reading response header from upstream, client: 172.18.0.1, server: , request: "GET /version HTTP/1.1", upstream: "http://172.18.0.2:3000/version", host: "localhost:8080"
+2025/10/30 17:56:10 [warn] 8#8: *23 upstream server temporarily disabled while reading response header from upstream, client: 172.18.0.1, server: , request: "GET /version HTTP/1.1", upstream: "http://172.18.0.2:3000/version", host: "localhost:8080"
